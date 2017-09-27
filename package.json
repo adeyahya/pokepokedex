@@ -1,13 +1,15 @@
 {
  "scripts": {
-  "dev": "next",
+  "dev": "node server.js",
   "test": "jest -u"
  },
  "dependencies": {
   "enzyme": "^3.0.0",
+  "express": "^4.15.5",
   "isomorphic-unfetch": "^2.0.0",
   "jest": "^21.2.0",
   "next": "^3.2.2",
+  "next-routes": "^1.0.40",
   "react": "^15.6.2",
   "react-dom": "^15.6.2",
   "react-test-renderer": "15.6.1"
