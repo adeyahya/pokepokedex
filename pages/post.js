@@ -13,8 +13,7 @@ class Post extends React.Component {
     return {
       data: data,
       status: res.status,
-      // number devided by string equal Infinity
-      idType: Number(theId) / "" === Infinity ? "number" : "string"
+      idType: isNaN(theId) ? "string" : "number"
     }
   }
 
@@ -68,11 +67,22 @@ class Post extends React.Component {
         </ul>
 
         <h2>Stats</h2>
-        <ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
           {stats.map((x,i) =>
-            <li key={i}>{nameNicer(x.stat.name)} : {x.base_stat}</li>
+            <tr key={i}>
+              <td>{nameNicer(x.stat.name)}</td>
+              <td>{x.base_stat}</td>
+            </tr>
           )}
-        </ul>
+          </tbody>
+        </table>
 
         <h2>Moves</h2>
         {moves.map((x,i) =>
@@ -80,6 +90,42 @@ class Post extends React.Component {
         )}
 
         <style jsx>{`
+          table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+            background-color: transparent;
+            border-collapse: collapse;
+          }
+          table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #e9ecef;
+          }
+          table th {
+            vertical-align: top;
+            padding: .75rem;
+            border-top: 1px solid #e9ecef;
+            text-align: left;
+          }
+
+          table td {
+            padding: .75rem;
+            vertical-align: top;
+            border-top: 1px solid #e9ecef;
+          }
+
+          ul {
+            padding: 0;
+            margin: 0;
+          }
+
+          ul li {
+            list-style: none;
+            display: inline-block;
+            margin-right: 12px;
+            font-size: 1.4rem;
+          }
+
           span.type {
             background: #3f51b5;
             margin: 0;
