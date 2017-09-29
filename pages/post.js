@@ -2,65 +2,96 @@ import * as React from 'react'
 import _ from 'lodash'
 import fetch from 'isomorphic-unfetch'
 import Layout from '../components/layout'
-
-function nameNicer(str) {
-  return str.replace('-',' ')
-}
+import { nameNicer, getPokemonId } from '../lib'
+import { Link } from '../routes'
 
 class Post extends React.Component {
-  static async getInitialProps({query}) {
-    const res = await fetch(`http://pokeapi.salestock.net/api/v2/pokemon/${query.id}`)
+  static async getInitialProps({query, req}) {
+    let theId = query.id.replace(/\s/g,'').toLowerCase()
+    const res = await fetch(`http://pokeapi.salestock.net/api/v2/pokemon/${theId}`)
     const data = await res.json()
     return {
-      data: data
+      data: data,
+      status: res.status,
+      query: theId,
+      // number devided by string equal Infinity
+      idType: Number(theId) / "" === Infinity ? "number" : "string"
     }
   }
 
   componentDidMount() {
-    console.log(this.props.data)
+    console.log(this.props)
   }
 
   render() {
+    const {
+      name,
+      types,
+      abilities,
+      moves,
+      sprites,
+      stats
+    } = this.props.data
+
+    if (this.props.status !== 200) {
+      return (
+        <Layout>
+          <h1>
+            {this.props.status === 404
+            ? `Can't find any pokemon with ${this.props.idType === 'number' ? "Id" : "Name" } ${ decodeURIComponent(this.props.url.query.id) }`
+            : `${this.props.status} Server Error!`}
+          </h1>
+        </Layout>
+      )
+    }
+
     return (
       <Layout>
-        <h1>
-          { this.props.data.name }
-        </h1>
+        <h1>{nameNicer(name)}</h1>
         <p>
-          {this.props.data.types.map((x,i) =>
-            <span index={i}>{x.type.name}, </span>
+          {types.map((x,i) =>
+            <span className="type" key={i}>{x.type.name}</span>
           )}
         </p>
-        <img src={ this.props.data.sprites.front_default.replace('http://pokeapi.salestock.net/media/','https://raw.githubusercontent.com/PokeAPI/sprites/master/') } alt="" className="full"/>
-        {_.filter(this.props.data.sprites, o => o).filter(x => x != this.props.data.sprites.front_default).map((image, index) =>
-          <img src={image.replace('http://pokeapi.salestock.net/media/','https://raw.githubusercontent.com/PokeAPI/sprites/master/')} alt=""/>
+        <img src={ sprites.front_default }/>
+        {_.filter(sprites, o => o).filter(x => x != sprites.front_default).map((image, index) =>
+          <img key={index} src={image}/>
         )}
         <h2>Abilities</h2>
         <ul>
-          {this.props.data.abilities.map((x,i) =>
-            <li key={i}>{nameNicer(x.ability.name)}</li>
+          {abilities.map((x,i) =>
+            <li key={i}>
+              <Link route={`/ability/${x.ability.name}`}>
+                <a>{nameNicer(x.ability.name)}</a>
+              </Link>
+            </li>
           )}
         </ul>
 
-        <h2>Moves</h2>
-        {this.props.data.moves.map((x,i) =>
-          <span key={i}>{nameNicer(x.move.name)}, </span>
-        )}
-
         <h2>Stats</h2>
         <ul>
-          {this.props.data.stats.map((x,i) =>
+          {stats.map((x,i) =>
             <li key={i}>{nameNicer(x.stat.name)} : {x.base_stat}</li>
           )}
         </ul>
 
+        <h2>Moves</h2>
+        {moves.map((x,i) =>
+          <span key={i}>{nameNicer(x.move.name)}, </span>
+        )}
 
         <style jsx>{`
+          span.type {
+            background: #3f51b5;
+            margin: 0;
+            margin-right: 10px;
+            padding: 5px 15px;
+            color: white;
+            border-radius: 50px;
+          }
           h1 {
             margin: 0;
-          }
-          img.full {
-            width: 100%;
+            text-transform: capitalize;
           }
           span, li {
             text-transform: capitalize;
