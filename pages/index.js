@@ -1,6 +1,8 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { Link, Router } from '../routes'
 import Layout from '../components/layout'
+import intersectionObserver from '../lib/intersection-observer'
 
 class Index extends React.Component {
   constructor() {
@@ -9,64 +11,77 @@ class Index extends React.Component {
       pokemon: [],
       isLoading: false,
       isError: false,
-      errorMessage: ''
+      errorMessage: '',
+      imagesDir: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/',
+      endpoint: 'http://pokeapi.salestock.net/api/v2/pokemon/'
     }
-
-    this.loadMore = this._loadMore.bind(this)
+    this.loadData = this._loadData.bind(this)
+    this.intersectCallback = this._intersectCallback.bind(this)
   }
 
-  async componentDidMount() {
-    this.setState({
-      isLoading: true
-    })
+  async _loadData() {
+    this.setState({ isLoading: true })
 
-    const res = await fetch('http://pokeapi.salestock.net/api/v2/pokemon/')
+    const res = await fetch(this.state.endpoint)
     const data = await res.json()
 
     this.setState({
       isLoading: false,
-      pokemon: data.results,
-      nextPayload: data.next,
-      totalPokemon: data.count
-    })
-
-    this.loadMore()
-    this.loadMore()
-  }
-
-  async _loadMore() {
-    this.setState({
-      isLoading: true
-    })
-
-    const res = await fetch(this.state.nextPayload)
-    const data = await res.json()
-
-    this.setState({
-      isLoading: false,
-      pokemon: [...this.state.pokemon,...data.results],
+      pokemon: [
+        ...this.state.pokemon,
+        ...data.results
+      ],
       nextPayload: data.next
     })
   }
 
-  render () {
+  _intersectCallback(entries, observer) {
+    entries.map(entry => {
+      if (entry.isIntersecting) {
+        this.loadData()
+      }
+    })
+  }
+
+  componentDidMount() {
+    // load initial data
+    this.loadData()
+
+    // call Intersection Observer on the client
+    // when there is window and document available
+    intersectionObserver(window, document)
+    const node = ReactDOM.findDOMNode(this)
+    // intersection observer options
+    const options = {
+      root: null,
+      rootMargin: '0px 0px 50px 0px'
+    }
+    const observer = new IntersectionObserver(this.intersectCallback, options)
+    observer.observe(node.querySelector("#bottom-page"))
+  }
+
+  render() {
+    let { pokemon, isLoading, isError, nextPayload } = this.state
     return (
       <Layout>
         <ul>
-          { this.state.pokemon.map((poke, index) =>
+          { pokemon.map((poke, index) =>
             <li key={ index }>
               <Link route='post' params={{ id: index + 1 }}>
                 <a>
-                  <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`} alt={poke.name}/>
+                  <img src={`${ this.state.imagesDir + (index + 1) }.png`} alt={poke.name}/>
                   <h2>{poke.name}</h2>
                 </a>
               </Link>
             </li>
-          ) }
+          )}
         </ul>
-        { !this.state.isLoading && this.state.nextPayload != null
-        ? <button onClick={ this.loadMore }>Load More</button>
-        : null }
+        { !isLoading && nextPayload != null
+        ? <p>Loading Data</p>
+        : <p>All data has been loaded!</p> }
+
+        <div id="bottom-page"></div>
+
         <style jsx>{`
           ul {
             margin: 0;
@@ -76,6 +91,11 @@ class Index extends React.Component {
             justify-content: flex-start;
           }
 
+          a {
+            color: #333;
+            text-decoration: none;
+          }
+
           ul li {
             list-style: none;
             padding: 0;
@@ -83,6 +103,12 @@ class Index extends React.Component {
             margin-bottom: 15px;
             text-align: center;
             flex: 33.3333% 0 0;
+          }
+
+          @media (max-width: 426px) {
+            ul li {
+              flex: 50% 0 0;
+            }
           }
 
           h2 {
