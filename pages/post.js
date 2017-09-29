@@ -2,6 +2,7 @@ import * as React from 'react'
 import _ from 'lodash'
 import fetch from 'isomorphic-unfetch'
 import Layout from '../components/layout'
+import Search from '../components/search'
 import { nameNicer, getPokemonId } from '../lib'
 import { Link } from '../routes'
 
@@ -27,7 +28,6 @@ class Post extends React.Component {
   }
 
   async componentDidMount() {
-    console.log(this.props)
     const res = await fetch(`http://pokeapi.salestock.net/api/v2/pokemon-species/${this.props.theId}`)
     const data = await res.json()
     if (res.status === 200) {
@@ -44,7 +44,6 @@ class Post extends React.Component {
         ]
       })
     }
-    console.log(this.state.profile)
   }
 
   render() {
@@ -60,6 +59,7 @@ class Post extends React.Component {
     if (this.props.status !== 200) {
       return (
         <Layout>
+          <Search></Search>
           <h1>
             {this.props.status === 404
             ? `Can't find any pokemon with ${this.props.idType === 'number' ? "Id" : "Name" } ${ decodeURIComponent(this.props.url.query.id) }`

@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom'
 import { Link, Router } from '../routes'
 import { nameNicer, getPokemonId } from '../lib'
 import Layout from '../components/layout'
+import Search from '../components/search'
 import intersectionObserver from '../lib/intersection-observer'
 
 class Index extends React.Component {
@@ -63,8 +64,10 @@ class Index extends React.Component {
 
   render() {
     let { pokemon, isLoading, isError, endpoint } = this.state
+
     return (
       <Layout>
+        <Search></Search>
         <ul>
           { pokemon.map((poke, index) =>
             <li key={ index }>
