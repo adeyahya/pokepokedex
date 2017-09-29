@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Link, Router } from '../routes'
+import { nameNicer, getPokemonId } from '../lib'
 import Layout from '../components/layout'
 import intersectionObserver from '../lib/intersection-observer'
 
@@ -31,7 +32,7 @@ class Index extends React.Component {
         ...this.state.pokemon,
         ...data.results
       ],
-      nextPayload: data.next
+      endpoint: data.next
     })
   }
 
@@ -61,28 +62,54 @@ class Index extends React.Component {
   }
 
   render() {
-    let { pokemon, isLoading, isError, nextPayload } = this.state
+    let { pokemon, isLoading, isError, endpoint } = this.state
     return (
       <Layout>
         <ul>
           { pokemon.map((poke, index) =>
             <li key={ index }>
-              <Link route='post' params={{ id: index + 1 }}>
+              <Link route='post' params={{ id: getPokemonId(poke.url) }}>
                 <a>
-                  <img src={`${ this.state.imagesDir + (index + 1) }.png`} alt={poke.name}/>
-                  <h2>{poke.name}</h2>
+                  <figure>
+                    <img src={`${ this.state.imagesDir + getPokemonId(poke.url) }.png`} alt={poke.name}/>
+                  </figure>
+                  <h2>{nameNicer(poke.name)}</h2>
                 </a>
               </Link>
             </li>
           )}
         </ul>
-        { !isLoading && nextPayload != null
-        ? <p>Loading Data</p>
-        : <p>All data has been loaded!</p> }
+
+        {isLoading && endpoint != null
+        ? <p className="loading">Loading Pokemon</p> : null}
+        {endpoint == null
+        ? <p className="loading">There's no more pokemon</p> : null}
 
         <div id="bottom-page"></div>
 
         <style jsx>{`
+          p.loading {
+            text-align: center;
+            font-size: 2rem;
+            padding: 30px 0;
+            margin: 0;
+            color: #ababab;
+          }
+          figure {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            height: 100px;
+          }
+
+          figure img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+
           ul {
             margin: 0;
             padding: 0;
@@ -114,6 +141,7 @@ class Index extends React.Component {
           h2 {
             margin-top: 0;
             font-size: 1.3rem;
+            text-transform: capitalize;
           }
         `}</style>
       </Layout>
