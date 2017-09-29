@@ -13,7 +13,6 @@ class Post extends React.Component {
     return {
       data: data,
       status: res.status,
-      query: theId,
       // number devided by string equal Infinity
       idType: Number(theId) / "" === Infinity ? "number" : "string"
     }
