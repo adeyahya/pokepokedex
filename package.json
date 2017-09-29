@@ -11,6 +11,7 @@
   "lodash": "^4.17.4",
   "next": "^3.2.2",
   "next-routes": "^1.0.40",
+  "nprogress": "^0.2.0",
   "react": "^15.6.2",
   "react-dom": "^15.6.2",
   "react-test-renderer": "15.6.1"
