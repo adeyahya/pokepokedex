@@ -55,7 +55,7 @@ class Index extends React.Component {
     // intersection observer options
     const options = {
       root: null,
-      rootMargin: '0px 0px 50px 0px'
+      rootMargin: '0px 0px 200px 0px'
     }
     const observer = new IntersectionObserver(this.intersectCallback, options)
     observer.observe(node.querySelector("#bottom-page"))

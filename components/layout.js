@@ -26,7 +26,7 @@ export default ({ children, title = 'PokePokeDex' }) => (
         min-height: 100vh;
         margin: 0 auto;
         background-color: white;
-        padding: 1rem 20px 0;
+        padding: 1rem 20px 5rem;
         box-sizing: border-box;
       }
     `}</style>
