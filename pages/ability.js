@@ -9,7 +9,8 @@ class Abilities extends React.Component {
   static async getInitialProps({query, req}) {
     //remove all space with -, transform to lower case
     const name = decodeURIComponent(query.name).replace(/\s/g,"-").toLowerCase()
-    const res = await fetch(`http://pokeapi.salestock.net/api/v2/ability/${name}`)
+    const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
+    const res = await fetch(`${baseUrl}/api/ability/${name}`)
     const data = await res.json()
     return {
       data: data,

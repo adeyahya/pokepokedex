@@ -16,7 +16,8 @@ class Post extends React.Component {
 
   static async getInitialProps({query, req}) {
     let theId = query.id.replace(/\s/g,'').toLowerCase()
-    const res = await fetch(`http://pokeapi.salestock.net/api/v2/pokemon/${theId}`)
+    const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
+    const res = await fetch(`${baseUrl}/api/pokemon/${theId}`)
     const data = await res.json()
 
     return {
@@ -28,7 +29,7 @@ class Post extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await fetch(`http://pokeapi.salestock.net/api/v2/pokemon-species/${this.props.theId}`)
+    const res = await fetch(`/api/species/${this.props.theId}`)
     const data = await res.json()
     if (res.status === 200) {
       this.setState({

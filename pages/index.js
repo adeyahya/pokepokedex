@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Link, Router } from '../routes'
 import { nameNicer, getPokemonId } from '../lib'
+import fetch from 'isomorphic-unfetch'
 import Layout from '../components/layout'
 import Search from '../components/search'
 import intersectionObserver from '../lib/intersection-observer'
@@ -15,7 +16,7 @@ class Index extends React.Component {
       isError: false,
       errorMessage: '',
       imagesDir: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/',
-      endpoint: 'http://pokeapi.salestock.net/api/v2/pokemon/'
+      endpoint: '/api/pokemon/'
     }
     this.loadData = this._loadData.bind(this)
     this.intersectCallback = this._intersectCallback.bind(this)
@@ -33,7 +34,7 @@ class Index extends React.Component {
         ...this.state.pokemon,
         ...data.results
       ],
-      endpoint: data.next
+      endpoint: data.next.replace('http://pokeapi.salestock.net/api/v2/pokemon/','/api/pokemon/')
     })
   }
 
