@@ -1,5 +1,5 @@
 # PokePokeDex
-[https:/pokepokedex.now.sh](https:/pokepokedex.now.sh)
+[https://pokepokedex.now.sh](https://pokepokedex.now.sh)
 
 Pokedex using Express and React SSR.
 
