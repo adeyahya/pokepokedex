@@ -1,11 +1,20 @@
 {
+  "name": "pokepokedex",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=7.10.1"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Ade Yahya",
+    "email": "adeyahyaprasetyo@gmail.com"
+  },
  "scripts": {
   "start": "NODE_ENV=production node server.js",
   "dev": "node server.js",
   "test": "jest -u",
   "heroku-postbuild": "next build",
-  "build": "next build",
-  "deploy": "next build && NODE_ENV=production pm2 start server.js"
+  "build": "next build"
  },
  "dependencies": {
   "enzyme": "^3.0.0",
