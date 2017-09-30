@@ -16,9 +16,9 @@
   "next": "^3.2.2",
   "next-routes": "^1.0.40",
   "nprogress": "^0.2.0",
-  "pm2": "^2.7.1",
   "react": "^15.6.2",
   "react-dom": "^15.6.2",
-  "react-test-renderer": "15.6.1"
+  "react-test-renderer": "15.6.1",
+  "referrer-policy": "^1.1.0"
  }
 }
